@@ -37,8 +37,6 @@ import System.IO.Unsafe
 
 import qualified System.Random as R
 
-import Network.Info
-
 import Data.UUID.Types.Internal.Builder
 import Data.UUID.Types.Internal
 
@@ -101,12 +99,12 @@ state = unsafePerformIO $ do
 -- In those cases we fake it with a random
 -- 6 bytes seed.
 getMac :: IO MAC
-getMac =
-    getNetworkInterfaces >>=
-    return . listToMaybe . filter (minBound /=) . map mac >>=
-    \macM -> case macM of
-      Just m -> return m
-      Nothing -> randomMac
+getMac = randomMac
+    -- getNetworkInterfaces >>=
+    -- return . listToMaybe . filter (minBound /=) . map mac >>=
+    -- \macM -> case macM of
+    --   Just m -> return m
+    --   Nothing -> randomMac
 
 randomMac :: IO MAC
 randomMac =

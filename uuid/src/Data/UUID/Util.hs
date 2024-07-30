@@ -13,7 +13,6 @@ import Data.Word
 import Data.Word.Util
 import Data.Bits
 import Data.UUID.Types.Internal
-import Network.Info
 import Data.Int (Int64)
 
 version :: UUID -> Int
