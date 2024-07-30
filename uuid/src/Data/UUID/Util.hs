@@ -15,40 +15,6 @@ import Data.Word.Util
 import Data.Bits
 import Data.UUID.Types.Internal
 import Data.Int (Int64)
-import Foreign.Storable
-import Foreign.Ptr
-import Text.Printf
-
-data MAC = MAC
-    {-# UNPACK #-} !Word8
-    {-# UNPACK #-} !Word8
-    {-# UNPACK #-} !Word8
-    {-# UNPACK #-} !Word8
-    {-# UNPACK #-} !Word8
-    {-# UNPACK #-} !Word8
-    deriving (Eq, Ord, Bounded)
-
-instance Show MAC where
-    show (MAC a b c d e f) = printf "%02x:%02x:%02x:%02x:%02x:%02x" a b c d e f
-
-instance Storable MAC where
-    alignment _ = 1
-    sizeOf _    = 6
-    peek p      = do
-        a <- peek $ castPtr p
-        b <- peekByteOff p 1
-        c <- peekByteOff p 2
-        d <- peekByteOff p 3
-        e <- peekByteOff p 4
-        f <- peekByteOff p 5
-        return $ MAC a b c d e f
-    poke p (MAC a b c d e f) = do
-        poke (castPtr p) a
-        pokeByteOff p 1 b
-        pokeByteOff p 2 c
-        pokeByteOff p 3 d
-        pokeByteOff p 4 e
-        pokeByteOff p 5 f
 
 version :: UUID -> Int
 version uuid =

@@ -42,6 +42,7 @@ module Data.UUID.Types.Internal
     , UnpackedUUID(..)
     , pack
     , unpack
+    , MAC(..)
     ) where
 
 import           Prelude                          hiding (null)
@@ -55,7 +56,8 @@ import           Data.Data
 import           Data.Functor                     ((<$>))
 import           Data.Hashable
 import           Data.List                        (elemIndices)
-import           Foreign.Ptr                      (Ptr)
+import           Foreign.Ptr                      (Ptr, castPtr)
+
 
 import           Foreign.Storable
 
@@ -68,6 +70,7 @@ import qualified Data.ByteString.Lazy             as BL
 import qualified Data.ByteString.Unsafe           as BU
 import           Data.Text                        (Text)
 import qualified Data.Text.Encoding               as T
+import           Text.Printf                      (printf)
 
 import           Data.UUID.Types.Internal.Builder
 
@@ -575,3 +578,34 @@ uuidType :: DataType
 uuidType =  mkNoRepType "Data.UUID.Types.UUID"
 
 deriving instance Lift UUID
+
+data MAC = MAC
+    {-# UNPACK #-} !Word8
+    {-# UNPACK #-} !Word8
+    {-# UNPACK #-} !Word8
+    {-# UNPACK #-} !Word8
+    {-# UNPACK #-} !Word8
+    {-# UNPACK #-} !Word8
+    deriving (Eq, Ord, Bounded)
+
+instance Show MAC where
+    show (MAC a b c d e f) = printf "%02x:%02x:%02x:%02x:%02x:%02x" a b c d e f
+
+instance Storable MAC where
+    alignment _ = 1
+    sizeOf _    = 6
+    peek p      = do
+        a <- peek $ castPtr p
+        b <- peekByteOff p 1
+        c <- peekByteOff p 2
+        d <- peekByteOff p 3
+        e <- peekByteOff p 4
+        f <- peekByteOff p 5
+        return $ MAC a b c d e f
+    poke p (MAC a b c d e f) = do
+        poke (castPtr p) a
+        pokeByteOff p 1 b
+        pokeByteOff p 2 c
+        pokeByteOff p 3 d
+        pokeByteOff p 4 e
+        pokeByteOff p 5 f
