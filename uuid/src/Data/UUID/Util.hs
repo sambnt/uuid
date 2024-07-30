@@ -15,6 +15,9 @@ import Data.Word.Util
 import Data.Bits
 import Data.UUID.Types.Internal
 import Data.Int (Int64)
+import Foreign.Storable
+import Foreign.Ptr
+import Text.Printf
 
 data MAC = MAC
     {-# UNPACK #-} !Word8
